@@ -26,6 +26,38 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Get Active todos
+router.get("/active", async (req, res) => {
+  try {
+    const todo = new Todo();
+    const data = await todo.findActive();
+    res.status(200).json(data);
+  } catch (err) {
+    res.send(err);
+  }
+});
+
+// Get Active todos with callback
+// Model.find() no longer accepts a callback, deprecated
+// router.get("/active-callback", (req, res) => {
+//   const todo = new Todo();
+//   todo.findActiveCallback((err, data) => {
+//     res.status(200).json(data);
+//   });
+// });
+
+// Get title: js (js substring wala) todos
+router.get("/js", async (req, res) => {
+  const data = await Todo.findByJS();
+  res.status(200).json(data);
+});
+
+// Get Todos by language
+router.get("/language", async (req, res) => {
+  const data = await Todo.find().byLanguage("node");
+  res.status(200).json(data);
+});
+
 // Get a todo by id
 router.get("/:id", async (req, res) => {
   try {
