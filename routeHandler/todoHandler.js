@@ -8,18 +8,51 @@ const Todo = new mongoose.model("Todo", todoSchema); // it will create Todos. so
 
 // Get all the todos
 router.get("/", async (req, res) => {
-    
+  try {
+    const data = await Todo.find({
+      status: "active",
+    })
+      .select({
+        title: 0,
+        description: 0,
+        date: 0,
+        // title, description, date dekhabe na
+      })
+      //.limit(3) // only first 3 ta dekhabe
+      .exec();
+    res.send(data);
+  } catch {
+    res.status(500).send(`Error occured`);
+  }
 });
 
 // Get a todo by id
-router.get("/:id", async (req, res) => {});
+router.get("/:id", async (req, res) => {
+  try {
+    const data = await Todo.find({
+      _id: req.params.id,
+    })
+      .select({
+        title: 0,
+        description: 0,
+        date: 0,
+        // title, description, date dekhabe na
+      })
+      .limit(2)
+      .exec();
+    res.send(data);
+  } catch {
+    res.status(500).send(`Error occured`);
+  }
+});
 
 // Post a todo
 router.post("/", async (req, res) => {
   const newTodo = new Todo(req.body);
   try {
     await newTodo.save(); // model.save() return void promise. to accept promise, must use await
-    console.log("todo saved succefully");
+    // here save() is an instance method
+    console.log("todo saved successfully");
     res
       .status(200)
       .send("Todo was inserted successfully. congrats from try block");
@@ -91,6 +124,17 @@ router.put("/:id", async (req, res) => {
 });
 
 // Delete todo
-router.delete("/:id", async (req, res) => {});
+router.delete("/:id", async (req, res) => {
+  try {
+    const data = await Todo.deleteOne({
+      _id: req.params.id,
+    });
+
+    res.status(200).json(data);
+    console.log(`data deleted successfully`);
+  } catch {
+    res.status(500).send(`Error occured`);
+  }
+});
 
 module.exports = router;

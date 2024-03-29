@@ -5,7 +5,7 @@ const todoSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  description: String, // required: false
+  description: String, // default required: false
   status: {
     type: String,
     enum: ["active", "inactive"],
